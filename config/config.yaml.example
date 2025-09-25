@@ -1,0 +1,43 @@
+## 系统配置
+system:
+  ## 开发环境
+  env: develop  # develop, test, prod
+  ## 启动地址
+  addr: 0.0.0.0:8124
+
+## mysql
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  username: 
+  password: 
+  dbname: 
+
+## redis
+redis:
+  db: 0
+  addr: 127.0.0.1:6379
+  password: ""
+#   sentinel:
+#     master-name: mymaster
+#     password: "redis123"
+#     nodes:
+#       - 192.168.0.101:26379
+#       - 192.168.0.102:26379
+#       - 192.168.0.103:26379
+
+## email
+email:
+  user: test@163.com
+  pass: xxxxxx
+  host: xxxxx
+  port: 465
+
+## jwt
+jwt:
+  ## 秘钥
+  secret: xxxxxx
+  ## 过期时间单位:秒
+  expires: 86400
+  ## 颁发者
+  issuer: xxxxx
