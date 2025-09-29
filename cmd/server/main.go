@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	cfgDir = pflag.StringP("config dir", "c", "", "config path.")
+	cfgDir = pflag.StringP("config dir", "c", "../../config", "config path.")
 )
 
 func main() {
