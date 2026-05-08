@@ -3,28 +3,27 @@ package config
 var Cfg Config
 
 type Config struct {
-	System System `yaml:"system"`
-	MySql  MySql  `yaml:"mysql"`
-	Redis  Redis  `yaml:"redis"`
-	// jwt
-	JWT JWT `json:"jwt" yaml:"jwt"`
-	// email
-	Email Email `json:"email" yaml:"email"`
+	System System `mapstructure:"system"`
+	MySql  MySql  `mapstructure:"mysql"`
+	Redis  Redis  `mapstructure:"redis"`
+	JWT    JWT    `mapstructure:"jwt"`
+	Email  Email  `mapstructure:"email"`
 }
 
 type System struct {
-	ENV       string `mapstructure:"env"`
+	Env       string `mapstructure:"env"`
 	Addr      string `mapstructure:"addr"`
 	Location  string `mapstructure:"location"`
 	StartCron bool   `mapstructure:"start-cron"`
+	ShowSQL   bool   `mapstructure:"show-sql"`
 }
 
 type MySql struct {
-	Host     string `json:"host" yaml:"host"`
-	Port     int    `json:"port" yaml:"port"`
-	Username string `json:"username" yaml:"username"`
-	Password string `json:"password" yaml:"password"`
-	Dbname   string `json:"dbname" yaml:"dbname"`
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+	Dbname   string `mapstructure:"dbname"`
 }
 
 type Redis struct {
@@ -50,8 +49,8 @@ type JWT struct {
 }
 
 type Email struct {
-	User string `mapstructure:"user" yaml:"user"`
-	Pass string `mapstructure:"pass" yaml:"pass"`
-	Host string `mapstructure:"host" yaml:"host"`
-	Port string `mapstructure:"port" yaml:"port"`
+	User string `mapstructure:"user"`
+	Pass string `mapstructure:"pass"`
+	Host string `mapstructure:"host"`
+	Port string `mapstructure:"port"`
 }

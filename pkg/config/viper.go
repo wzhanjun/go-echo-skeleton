@@ -5,12 +5,17 @@ import (
 	"os"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
-func Viper(path string, configType string) *viper.Viper {
+func Init(path string, configType string) {
+	// 1. 加载 .env (文件不存在则静默跳过)
+	_ = godotenv.Load()
+
 	v := viper.New()
-	// 设置文件
+	// 2. 允许环境变量覆盖配置 (例如 SYSTEM_ADDR 覆盖 system.addr)
+	v.AutomaticEnv()
 
 	if path != "" {
 		info, err := os.Stat(path)
@@ -26,13 +31,12 @@ func Viper(path string, configType string) *viper.Viper {
 		v.AddConfigPath(".")
 	}
 
-	// 设置类型
 	v.SetConfigType(configType)
 
 	if err := v.ReadInConfig(); err != nil {
 		panic(fmt.Sprintf("Fatal error config path: %s %v \n", path, err))
 	}
-	// 监听文件变化
+
 	v.WatchConfig()
 	v.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("config file changed:", e.Name)
@@ -44,6 +48,4 @@ func Viper(path string, configType string) *viper.Viper {
 	if err := v.Unmarshal(&Cfg); err != nil {
 		fmt.Println(err)
 	}
-
-	return v
 }

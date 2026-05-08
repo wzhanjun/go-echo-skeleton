@@ -4,6 +4,12 @@ system:
   env: develop  # develop, test, prod
   ## 启动地址
   addr: 0.0.0.0:8124
+  ## 时区
+  location: Asia/Shanghai
+  ## 是否启用定时任务
+  start-cron: false
+  ## 是否打印 SQL 日志
+  show-sql: false
 
 ## mysql
 mysql:

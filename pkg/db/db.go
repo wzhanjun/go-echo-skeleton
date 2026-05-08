@@ -7,11 +7,10 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gookit/slog"
-	"xorm.io/xorm"
-	"xorm.io/xorm/log"
-
 	"github.com/wzhanjun/go-echo-skeleton/pkg/config"
 	gslog "github.com/wzhanjun/log-service/client"
+	"xorm.io/xorm"
+	"xorm.io/xorm/log"
 )
 
 var (
@@ -35,9 +34,14 @@ func GetEngine() *xorm.Engine {
 			panic(err)
 		}
 		engine.SetTZLocation(time.Local)
-		engine.ShowSQL(true)
-		if !config.Cfg.System.StartCron {
-			engine.SetLogger(NewSlogAdapter())
+		engine.ShowSQL(config.Cfg.System.ShowSQL)
+		engine.SetLogger(NewSlogAdapter())
+		// engine.SetMaxOpenConns(200)
+		// engine.SetMaxIdleConns(50)
+		// engine.SetConnMaxLifetime(30 * time.Minute)
+
+		if err := engine.Ping(); err != nil {
+			panic(fmt.Errorf("mysql ping failed: %w", err))
 		}
 	})
 

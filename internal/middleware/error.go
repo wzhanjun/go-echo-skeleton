@@ -13,13 +13,23 @@ import (
 func DefaultHTTPErrorHandler(err error, c echo.Context) {
 	slog.Std().Errorf("system error:%s, path:%s", err, c.Request().RequestURI)
 
-	errs := enum.Error
+	var (
+		errs = enum.Error
+		httpStatus = http.StatusInternalServerError
+	)
 	switch {
 	case errors.Is(err, echo.ErrNotFound):
 		errs = enum.ErrCodeNotFound
+		httpStatus = http.StatusNotFound
+	case errors.Is(err, echo.ErrUnauthorized):
+		errs = enum.ErrCodeUnauthorized
+		httpStatus = http.StatusUnauthorized
+	case errors.Is(err, echo.ErrBadRequest):
+		errs = enum.ParamsError
+		httpStatus = http.StatusBadRequest
 	}
 
-	_ = c.JSON(http.StatusBadRequest, dto.Response{
+	_ = c.JSON(httpStatus, dto.Response{
 		Code: int32(errs),
 		Msg:  errs.String(),
 		Data: nil,

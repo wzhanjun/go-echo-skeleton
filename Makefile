@@ -1,15 +1,15 @@
 NAME=go-echo-skeleton
 GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-w -s'
 
-default: services all
+default: all
 
 all:
-	@go generate ./enum
-	golangci-lint run 
+	@go generate ./internal/enum
+	golangci-lint run
 lint:
-	golangci-lint run 
+	golangci-lint run
 generate:
-	@go generate ./enum
+	@go generate ./internal/enum
 docs:
 	@swag init	
 
@@ -24,4 +24,4 @@ linux-amd64:
 	@upx -9 bin/$(NAME)
 	@echo "build success"
 	
-.PHONY: all lint generate docs 
+.PHONY: all lint generate docs win64 linux-amd64 

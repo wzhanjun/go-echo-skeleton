@@ -15,6 +15,8 @@ var (
 	once        sync.Once
 )
 
+const redisTimeout = 5 * time.Second
+
 func GetRedisConn() *redis.Client {
 
 	once.Do(func() {
@@ -25,22 +27,31 @@ func GetRedisConn() *redis.Client {
 				Password:         config.Cfg.Redis.Sentinel.Password,
 				SentinelPassword: config.Cfg.Redis.Sentinel.Password,
 				DB:               config.Cfg.Redis.DB,
+				DialTimeout:      redisTimeout,
+				ReadTimeout:      redisTimeout,
+				WriteTimeout:     redisTimeout,
 				ConnMaxIdleTime:  60 * time.Second,
 				PoolSize:         200,
 				MaxIdleConns:     50,
+				MinIdleConns:     10,
 			})
 		} else {
 			redisClient = redis.NewClient(&redis.Options{
 				Addr:            config.Cfg.Redis.Addr,
 				Password:        config.Cfg.Redis.Password,
 				DB:              config.Cfg.Redis.DB,
+				DialTimeout:     redisTimeout,
+				ReadTimeout:     redisTimeout,
+				WriteTimeout:    redisTimeout,
 				ConnMaxIdleTime: 60 * time.Second,
 				PoolSize:        200,
 				MinIdleConns:    50,
 			})
 		}
 
-		_, err := redisClient.Ping(context.Background()).Result()
+		pingCtx, cancel := context.WithTimeout(context.Background(), redisTimeout)
+		defer cancel()
+		_, err := redisClient.Ping(pingCtx).Result()
 		if err != nil {
 			slog.Label("redis").Panicf("redis连接失败, ping err:%+v", err)
 			panic(err)
@@ -51,7 +62,7 @@ func GetRedisConn() *redis.Client {
 }
 
 func GetRedisLock(key string, second int) (bool, error) {
-	client := GetRedisConn()
+	client := GetRedisConn()	
 
 	ok, err := client.SetNX(context.Background(), "gameads:lock:"+key, true, time.Second*time.Duration(second)).Result()
 	if err != nil {

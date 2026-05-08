@@ -1,7 +1,6 @@
 package mail
 
 import (
-	_ "embed"
 	"strconv"
 
 	"github.com/wzhanjun/go-echo-skeleton/pkg/config"
@@ -11,6 +10,10 @@ import (
 var (
 	MailSubject = "Welcome"
 )
+
+func SetMailSubject(subject string) {
+	MailSubject = subject
+}
 
 func SendMail(mailTo []string, subject string, body string) error {
 	mailConn := map[string]string{

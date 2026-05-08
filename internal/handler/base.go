@@ -44,10 +44,11 @@ func (s BaseController) Fail(c echo.Context, err error) error {
 			Msg:  e.Msg,
 		})
 	case *echo.HTTPError:
-		// echo 绑定参数错误
 		msg := enum.ParamsError.String()
-		if params, ok := err.(*echo.HTTPError).Internal.(*json.UnmarshalTypeError); ok {
-			msg = fmt.Sprintf("params %s error", params.Field)
+		if e.Internal != nil {
+			if unmarshalErr, ok := e.Internal.(*json.UnmarshalTypeError); ok {
+				msg = fmt.Sprintf("params %s error", unmarshalErr.Field)
+			}
 		}
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Code: int32(enum.ParamsError),
