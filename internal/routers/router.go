@@ -25,10 +25,16 @@ func Router() *echo.Echo {
 
 	e.GET("/health", v1.NewIndexController().Health)
 
+	user := v1.NewUserController()
 	apiv1 := e.Group("/api/v1")
 	apiv1.Use(mid.RequestTime())
 	{
 		apiv1.GET("/index", v1.NewIndexController().Index)
+		apiv1.GET("/users", user.List)
+		apiv1.GET("/users/:id", user.Get)
+		apiv1.POST("/users", user.Create)
+		apiv1.PUT("/users/:id", user.Update)
+		apiv1.DELETE("/users/:id", user.Delete)
 	}
 
 	return e

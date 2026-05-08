@@ -2,25 +2,33 @@ package dto
 
 // 响应数据体
 type Response struct {
-	// 业务状态错误码 0 = 正常， 其他：错误
-	Code int32 `json:"code"`
-	// 错误信息
-	Msg string `json:"msg"`
-	// 业务数据
+	Code int32       `json:"code"`
+	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
-// 分页内容
-type WrapPageData struct {
-	// 总记录数
-	Count int32 `json:"count"`
-	// 分页数据
-	List interface{} `json:"list"`
+// 分页数据
+type PageData struct {
+	Count int64      `json:"count"`
+	List  interface{} `json:"list"`
+}
+
+func NewPageData(count int64, list interface{}) PageData {
+	return PageData{Count: count, List: list}
 }
 
 type PageParams struct {
-	// 分页页码
 	PageIndex int `json:"page_index" query:"page_index"`
-	// 分页大小
-	PageSize int `json:"page_size" query:"page_size"`
+	PageSize  int `json:"page_size" query:"page_size"`
+}
+
+const defaultPageSize = 20
+
+func (p *PageParams) Normalize() {
+	if p.PageIndex <= 0 {
+		p.PageIndex = 1
+	}
+	if p.PageSize <= 0 {
+		p.PageSize = defaultPageSize
+	}
 }

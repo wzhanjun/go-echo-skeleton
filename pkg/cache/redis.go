@@ -62,9 +62,11 @@ func GetRedisConn() *redis.Client {
 }
 
 func GetRedisLock(key string, second int) (bool, error) {
-	client := GetRedisConn()	
+	client := GetRedisConn()
+	ctx, cancel := context.WithTimeout(context.Background(), redisTimeout)
+	defer cancel()
 
-	ok, err := client.SetNX(context.Background(), "gameads:lock:"+key, true, time.Second*time.Duration(second)).Result()
+	ok, err := client.SetNX(ctx, "lock:"+key, true, time.Second*time.Duration(second)).Result()
 	if err != nil {
 		slog.Label("redis").Errorf("redis加锁失败, key:%s err:%+v", key, err)
 		return false, err
@@ -75,8 +77,10 @@ func GetRedisLock(key string, second int) (bool, error) {
 
 func RedisUnLock(key string) error {
 	client := GetRedisConn()
+	ctx, cancel := context.WithTimeout(context.Background(), redisTimeout)
+	defer cancel()
 
-	_, err := client.Del(context.Background(), "gameads:lock:"+key).Result()
+	_, err := client.Del(ctx, "lock:"+key).Result()
 	if err != nil {
 		slog.Label("redis").Errorf("redis释放锁失败, key:%s err:%+v", key, err)
 		return err

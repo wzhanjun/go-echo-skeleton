@@ -1,0 +1,22 @@
+kind: reverse
+name: mydb
+source:
+  database: mysql
+  # 修改为你的数据库连接串
+  conn_str: "root:pass@tcp(127.0.0.1:3306)/go_echo_skeleton?charset=utf8&parseTime=true"
+targets:
+  - type: codes
+    language: golang
+    output_dir: internal/models
+    multiple_files: true
+    table_mapper: snake
+    column_mapper: snake
+    # 模板路径（默认使用此文件）
+    template_path: generate/xorm/templates/struct.go.tpl
+    # 只生成指定表（取消注释并按需修改）
+    # include_tables:
+    #   - user
+    #   - order
+    # 排除指定表
+    # exclude_tables:
+    #   - migrations
